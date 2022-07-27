@@ -1,0 +1,35 @@
+---
+title: "Mapa de grabaciones pasivas o de referencia de murciélagos en Colombia"
+author: "Diego Lizcano, Aida Otalora, Danny Zurc, Francisco Sanchez"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
+    code_folding: hide
+    df_print: paged
+    social: [ "twitter", "facebook" ]
+    fig_caption: true
+    toc: true
+    toc_float: true
+    smooth_scroll: true
+link-citations: yes
+toc: yes
+license: CC
+---
+
+<style>
+#TOC {
+  background: url("https://github.com/SCMas/bat_map/blob/main/SCMas_Small_Vertical_principal.png?raw=true");
+  background-size: contain;
+  padding-top: 180px !important;
+  background-repeat: no-repeat;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval=TRUE, echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE, results = "hold", results='asis')
+```
+
+
+

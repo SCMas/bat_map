@@ -1,7 +1,7 @@
 ---
-title: "Mapa de grabaciones pasivas o de referencia de murciélagos en Colombia"
-author: "Diego Lizcano, Aida Otalora, Danny Zurc, Francisco Sanchez"
-date: "`r Sys.Date()`"
+title: "Mapa de grabaciones pasivas y de referencia de murciélagos en Colombia"
+author: "Aída Otálora-Ardila, Daniela Martínez-Medina, Danny Zurc, Francisco Sánchez, Sara Acosta, Julián Lozano, Fábio Z. Farneda, Camila Díaz-Beltrán, Camila Valdés, Antonio Guillén, Jefferson Sánchez, Laura Obando, Angélica V. Yantén, Karen Bernal, Gabriela Moreno, Orlando Fabián Hernández-Leal, Leidy Azucena Ramirez Francel, Javier Salas, Catalina Cardenas, Alejandra Niño, Alexandra Buitrago, Nicolás Reyes-Amaya , Victor Hugo Serrano, Omar Reyes, Darwin Morales, Miguel Rodríguez-Posada, Christian Cabrera-Ojeda, Johana Castro, Cristian Calvache, Tatiana Velásquez, Rubian C. Fernández-Rodríguez, Diego J. Lizcano"
+date: "`r Sys.Date()`" 
 output:
   html_document:
     theme: flatly
@@ -22,7 +22,7 @@ license: CC
 #TOC {
   background: url("https://github.com/SCMas/bat_map/blob/main/SCMas_Small_Vertical_principal.png?raw=true");
   background-size: contain;
-  padding-top: 180px !important;
+  padding-top: 220px !important;
   background-repeat: no-repeat;
 }
 </style>
@@ -31,5 +31,68 @@ license: CC
 knitr::opts_chunk$set(eval=TRUE, echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE, results = "hold", results='asis')
 ```
 
+```{r}
+library(tidyverse)
+library(readxl)
+library(mapview)
+library(sf)
 
+```
+
+
+
+```{r}
+# Shared Table from: https://docs.google.com/spreadsheets/d/1rMqHBqDd8S8Gi969yqZK6NH8-kCXZnJS/edit?usp=sharing&ouid=113509074802217952757&rtpof=true&sd=true
+
+
+pasivas <- read_excel("D:/BoxFiles/Box Sync/CodigoR/Bats/data/grabaciones de Murcielagos.xlsx", 
+    sheet = "Grabaciones Pasivas")
+
+pasivas$Lat <-as.numeric(pasivas$Lat)
+pasivas$Lon <-as.numeric(pasivas$Lon)
+
+referencia <- read_excel("D:/BoxFiles/Box Sync/CodigoR/Bats/data/grabaciones de Murcielagos.xlsx", 
+    sheet = "Grabaciones Referencia")
+
+
+pasivas_sf <- st_as_sf(pasivas, coords = c("Lon", "Lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
+
+referencia_sf <- st_as_sf(referencia, coords = c("Lon", "Lat"), crs = "+proj=longlat +datum=WGS84 +no_defs")
+
+
+
+```
+
+
+# Pasivas
+
+El tamaño del círculo representa el número de noches.
+
+```{r fig.cap = "El tamaño del circulo representa el numero de noches"}
+pasivas_sf %>%
+  # filter (Tipo == "Grabación Pasiva") %>% 
+  select(Nombre, Ecosistema, Equipo_marca, Noches) %>%
+  mapview(zcol = "Equipo_marca",  cex = "Noches", #at = seq(1, 5, 10, 20, 300),
+          alpha = 0.1,
+          map.types = c("CartoDB.DarkMatter","Esri.WorldImagery", "OpenStreetMap.DE")
+  )
+```
+
+
+# De Referencia
+
+El color representa la familia. La localización no es exacta, es aproximada con el centroide del municipio.
+
+```{r fig.cap = "El color representa la familia. La localizacion no es exacta, es aproximada con el centride del municipio"}
+referencia_sf %>%
+  # filter (Tipo == "Grabación Pasiva") %>% 
+  select(Nombre, Ecosistema, Familia, Especimen_museo, Equipo_marca_ref) %>% 
+  st_jitter(factor = 0.001) %>%
+  mapview(zcol = "Familia",#  cex = "Equipo_marca_ref", #at = seq(1, 5, 10, 20, 300),
+          alpha = 0.2,
+          map.types = c("CartoDB.DarkMatter","Esri.WorldImagery", "OpenStreetMap.DE")
+  )
+
+
+```
 
